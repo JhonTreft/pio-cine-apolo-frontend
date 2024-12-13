@@ -1,3 +1,5 @@
+# pio-cine-apolo-frontend
+
 # Gestion administrativa
 ![imagen](https://github.com/user-attachments/assets/2438641d-bd3b-4ee7-b49e-2a45d0c8e3b0)
 
@@ -54,4 +56,3 @@ export default tseslint.config({
   },
 })
 ```
-# pio-cine-apolo-frontend
