@@ -37,6 +37,15 @@ const Home: React.FC = () => {
                 Ver Cartelera
               </Link>
             </li>
+
+            <li>
+              <Link
+                to="/dashboard"
+                className="text-xl bg-green-200 hover:bg-green-200 px-6 py-2  transition-all rounded-md text-black font-bold"
+              >
+                Dashboard
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

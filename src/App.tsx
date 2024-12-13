@@ -5,7 +5,7 @@ import LoginPage from './pages/LoginPage';
 import Home from './pages/Home';
 import MovieList from './components/MovieList';
 import Logout from './pages/Logout';
-
+import Dashboard from './components/Dash';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +16,7 @@ const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/movies" element={<MovieList />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path='/dashboard' element={<Dashboard />} key='dashboard'></Route>
       </Routes>
     </Router>
   );

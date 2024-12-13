@@ -3,6 +3,14 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './Navbar';  // Importa el componente Navbar
+import Modal from './Modal'; // Importa el componente Modal
+
+
+interface Reservation {
+  userName: string;  // Nombre del usuario
+  reservationDate: string;  // Fecha de la reserva
+}
+
 
 interface Movie {
   id: string;
@@ -11,6 +19,7 @@ interface Movie {
   image: string;
   selectedDate: string;
   reservations: number;  // Añadido para mostrar las reservas de la película
+  reservationsList: Reservation[];
 }
 
 const MovieList: React.FC = () => {
@@ -19,6 +28,7 @@ const MovieList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [userId, setUserId] = useState<string>('');
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null); // Estado para manejar el modal
 
   // Cargar el userId del localStorage cuando el componente se monta
   useEffect(() => {
@@ -26,7 +36,7 @@ const MovieList: React.FC = () => {
     if (storedUserId) {
       setUserId(storedUserId);
     }
-  }, []);  
+  }, []);
 
   // Cargar las películas desde la API
   useEffect(() => {
@@ -38,6 +48,7 @@ const MovieList: React.FC = () => {
           image: `https://picsum.photos/400/200?random=${movie.id}`,
           selectedDate: '',
           reservations: movie.reservationCount || 0,  // Asignar reservas disponibles
+          reservationsList: movie.reservations || [],  // Asignar la lista de reservas
         }));
         setMovies(moviesWithImages);
         setFilteredMovies(moviesWithImages);  // Mostrar todas las películas al principio
@@ -53,7 +64,6 @@ const MovieList: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
     const filtered = movies.filter((movie) =>
       movie.title.toLowerCase().includes(query.toLowerCase()) // Filtra por título
     );
@@ -68,7 +78,7 @@ const MovieList: React.FC = () => {
   };
 
   const handleReservation = (movieId: string) => {
-    const token = localStorage.getItem('token');  
+    const token = localStorage.getItem('token');
     const movie = filteredMovies.find((movie) => movie.id === movieId);
 
     if (!userId) {
@@ -109,6 +119,8 @@ const MovieList: React.FC = () => {
               }
             )
             .then(() => {
+              // Mostrar el modal con los detalles de la reserva
+              setSelectedMovie(movie);
               toast.success(`Entrada reservada para la película: ${movie.title}`);
             })
             .catch((error) => {
@@ -121,6 +133,10 @@ const MovieList: React.FC = () => {
         console.error('Error al verificar la reserva existente:', error);
         toast.error('Error al verificar la reserva existente');
       });
+  };
+
+  const closeModal = () => {
+    setSelectedMovie(null);
   };
 
   return (
@@ -149,16 +165,16 @@ const MovieList: React.FC = () => {
               src={movie.image}
               alt={movie.title}
               className="w-full object-cover rounded-lg mb-4"
+              onClick={() => setSelectedMovie(movie)}
             />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">{movie.title}</h3>
             <p className="text-gray-600 mb-4">{movie.description}</p>
 
             {/* Mostrar icono de reservas */}
             <div className="flex items-center mb-4">
-            <svg className="w-6 h-6 text-green-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 4 3 3H5v3m3 10-3-3h14v-3m-9-2.5 2-1.5v4"/>
-            </svg>
-
+              <svg className="w-6 h-6 text-green-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m16 4 3 3H5v3m3 10-3-3h14v-3m-9-2.5 2-1.5v4"/>
+              </svg>
               <span className="text-sm text-gray-600">{movie.reservations} Reservas</span>
             </div>
 
@@ -183,6 +199,11 @@ const MovieList: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Modal para mostrar los detalles de la reserva */}
+      {selectedMovie && (
+        <Modal movie={selectedMovie} onClose={closeModal} />
+      )}
     </div>
   );
 };
