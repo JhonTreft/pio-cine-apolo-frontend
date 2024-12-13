@@ -1,4 +1,8 @@
+# Gestion administrativa
 ![imagen](https://github.com/user-attachments/assets/2438641d-bd3b-4ee7-b49e-2a45d0c8e3b0)
+
+# Gestion cine
+![imagen](https://github.com/user-attachments/assets/56dfe3a9-897a-454c-af0f-c4be80425983)
 
 # React + TypeScript + Vite
 
